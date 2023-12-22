@@ -1,4 +1,3 @@
-# Datalemur #Histogram of Tweets
 SELECT 
   tweet_num AS tweet_bucket,
   COUNT(user_id) AS user_num
