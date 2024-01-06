@@ -1,0 +1,52 @@
+WITH age AS(
+SELECT 
+  t1.*,
+  t2.age_bucket
+FROM activities AS t1
+LEFT JOIN age_breakdown AS t2
+ON t1.user_id = t2.user_id
+WHERE activity_type IN ('open','send'))
+
+,overall_sum AS(
+SELECT age_bucket,
+SUM(time_spent) as sum_time
+FROM age
+GROUP BY age_bucket)
+
+,spend as(
+SELECT
+  age_bucket,
+  SUM(time_spent) as sum_spend
+FROM age
+WHERE activity_type = 'send'
+GROUP BY age_bucket)
+
+,open as(
+SELECT 
+  age_bucket,
+  SUM(time_spent) as sum_open
+FROM age
+WHERE activity_type = 'open'
+GROUP BY age_bucket)
+,cte1 AS(
+SELECT
+  t1.age_bucket,
+  ROUND(t1.sum_open*100.0/t2.sum_time,2) AS open_perc
+FROM open as t1
+LEFT JOIN overall_sum as t2
+ON t1.age_bucket = t2.age_bucket)
+,cte2 AS(
+SELECT
+  t3.age_bucket,
+  ROUND(t3.sum_spend*100.0/t4.sum_time,2) AS send_perc
+FROM spend as t3
+LEFT JOIN overall_sum as t4
+ON t3.age_bucket = t4.age_bucket)
+
+SELECT
+a1.age_bucket,
+a2.send_perc,
+a1.open_perc
+FROM cte1 as a1
+LEFT JOIN cte2 as a2
+on a1.age_bucket = a2.age_bucket;
