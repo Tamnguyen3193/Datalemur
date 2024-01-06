@@ -1,0 +1,13 @@
+with cte1 as(SELECT
+  t1.user_id,
+  t2.signup_action
+FROM emails as t1
+inner join texts as t2
+using(email_id))
+,cte2 as(SELECT
+  COUNT(*) as total,
+  SUM(CASE WHEN signup_action = 'Confirmed' THEN 1 ELSE 0 END) as sum_confirmed
+FROM cte1)
+SELECT
+  ROUND(sum_confirmed*1.0/ total, 2)
+from cte2;
