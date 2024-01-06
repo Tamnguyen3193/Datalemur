@@ -1,1 +1,17 @@
-
+SELECT
+    CAST(EXTRACT(month from event_date) AS Numeric) AS month,
+    COUNT(DISTINCT user_id)
+FROM user_actions
+WHERE EXTRACT(month from event_date) = 7
+AND
+EXTRACT(year from event_date) = 2022
+AND
+event_type IN ('sign-in','like','comment')
+AND
+user_id IN (
+SELECT DISTINCT user_id
+FROM user_actions
+WHERE EXTRACT(month from event_date) = 6
+AND EXTRACT(year from event_date) = 2022
+AND event_type IN ('sign-in','like','comment'))
+GROUP BY 1;
