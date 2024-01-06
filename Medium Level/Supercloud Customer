@@ -1,0 +1,13 @@
+with cte1 as(SELECT 
+  t1.customer_id,
+  count(distinct t2.product_category) as cat_num
+FROM customer_contracts as t1, products as t2
+where t1.product_id = t2.product_id
+GROUP BY t1.customer_id)
+
+,cte2 as(select max(cat_num) as max_cat
+from cte1)
+
+select t3.customer_id
+from cte1 as t3, cte2 as t4
+where t3.cat_num = t4.max_cat
