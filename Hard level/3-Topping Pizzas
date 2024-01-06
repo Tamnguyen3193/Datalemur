@@ -1,0 +1,7 @@
+SELECT 
+concat(a.topping_name,',',b.topping_name,',',c.topping_name) AS pizza, 
+(a.ingredient_cost + b.ingredient_cost + c.ingredient_cost) as total_cost
+FROM 
+pizza_toppings a , pizza_toppings b, pizza_toppings c
+where a.topping_name < b.topping_name and b.topping_name < c.topping_name
+order by total_cost desc, pizza
