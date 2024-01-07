@@ -1,3 +1,6 @@
+--Assume you're given a table containing information on Facebook user actions. 
+Write a query to obtain number of monthly active users (MAUs) in July 2022, including the month in numerical format "1, 2, 3".--
+
 SELECT
     CAST(EXTRACT(month from event_date) AS Numeric) AS month,
     COUNT(DISTINCT user_id)
@@ -8,7 +11,7 @@ EXTRACT(year from event_date) = 2022
 AND
 event_type IN ('sign-in','like','comment')
 AND
-user_id IN (
+user_id IN (--find user who has performed actions such as 'sign-in', 'like', or 'comment' in both the previous month--
 SELECT DISTINCT user_id
 FROM user_actions
 WHERE EXTRACT(month from event_date) = 6
