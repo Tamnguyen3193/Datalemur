@@ -1,13 +1,20 @@
-with cte1 as(SELECT
+--New TikTok users sign up with their emails. They confirmed their signup by replying to the text confirmation to activate their accounts.
+Users may receive multiple text messages for account confirmation until they have confirmed their new account.
+
+A senior analyst is interested to know the activation rate of specified users in the emails table. Write a query to find the activation rate. 
+Round the percentage to 2 decimal places.--
+
+with get_data as(SELECT
   t1.user_id,
   t2.signup_action
 FROM emails as t1
 inner join texts as t2
 using(email_id))
-,cte2 as(SELECT
+,total_confirmed as(SELECT
   COUNT(*) as total,
   SUM(CASE WHEN signup_action = 'Confirmed' THEN 1 ELSE 0 END) as sum_confirmed
-FROM cte1)
+FROM get_data)
+
 SELECT
   ROUND(sum_confirmed*1.0/ total, 2)
-from cte2;
+from total_confirmed;
