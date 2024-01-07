@@ -1,14 +1,27 @@
-with cte1 as(
+--This is the same question as problem #28 in the SQL Chapter of Ace the Data Science Interview!
+
+Assume you're given a table with measurement values obtained from a Google sensor over multiple days with measurements taken multiple times within each day.
+
+Write a query to calculate the sum of odd-numbered and even-numbered measurements separately for a particular day and display the results in two different columns. 
+Refer to the Example Output below for the desired format.
+
+Definition:
+
+Within a day, measurements taken at 1st, 3rd, and 5th times are considered odd-numbered measurements, and measurements taken at 2nd, 4th, 
+and 6th times are considered even-numbered measurements.--
+
+
+with get_data as(
 SELECT
   measurement_id,
   measurement_value,
   measurement_time,
-  me_day,
-  dense_RANK() over(partition by me_day order by measurement_time)
+  measurement_day,
+  DENSE_RANK() over(partition by measurement_day order by measurement_time)
 FROM(
 SELECT 
 *,
-extract(day from measurement_time) as me_day
+extract(day from measurement_time) as measurement_day
 FROM measurements) AS t1)
 
 select
@@ -18,18 +31,18 @@ select
 FROM(
 SELECT
  cast(measurement_time as date) as measurement_date,
-  me_day,
+  measurement_day,
   sum(measurement_value) AS sum_even
-from cte1
+from get_data
 where mod(dense_rank,2) = 0
-group by me_day, cast(measurement_time as date)) AS t2
+group by measurement_day, cast(measurement_time as date)) AS t2
 LEFT JOIN
 (SELECT
   cast(measurement_time as date) as measurement_date,
-  me_day,
+  measurement_day,
   sum(measurement_value) AS sum_odd
-from cte1
+from get_data
 where mod(dense_rank,2) = 1
-group by me_day, cast(measurement_time as date)) as t3
+group by measurement_day, cast(measurement_time as date)) as t3
 on t2.measurement_date = t3.measurement_date
 order by measurement_date;
