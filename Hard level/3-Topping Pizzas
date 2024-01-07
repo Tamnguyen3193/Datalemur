@@ -1,3 +1,12 @@
+--You’re a consultant for a major pizza chain that will be running a promotion where all 3-topping pizzas will be sold for a fixed price, 
+and are trying to understand the costs involved.
+
+Given a list of pizza toppings, consider all the possible 3-topping pizzas, and print out the total cost of those 3 toppings. 
+Sort the results with the highest total cost on the top followed by pizza toppings in ascending order.
+
+Break ties by listing the ingredients in alphabetical order, starting from the first ingredient, followed by the second and third.--
+
+
 SELECT 
 concat(a.topping_name,',',b.topping_name,',',c.topping_name) AS pizza, 
 (a.ingredient_cost + b.ingredient_cost + c.ingredient_cost) as total_cost
